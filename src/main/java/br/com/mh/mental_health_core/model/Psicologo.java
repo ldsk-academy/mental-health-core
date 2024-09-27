@@ -1,4 +1,4 @@
-package br.com.mh.mental_health_core.entities;
+package br.com.mh.mental_health_core.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +33,12 @@ public class Psicologo {
 	private List<Consulta> consultas = new ArrayList<>();
 
 	// Um psicologo pode ter Muitas disponibilidades.
-	@OneToMany(mappedBy = "psicologo")
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "horario_disponivel", joinColumns = @JoinColumn(name = "psicologo_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "disponibilidade_id", referencedColumnName = "id"))
 	private List<Disponibilidade> disponibilidades = new ArrayList<>();
-
+	
+	
+	// Um psicologo pode ter Muitas especialidades
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "psicologo_especialidade", joinColumns = @JoinColumn(name = "psicologo_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "especialidade_id", referencedColumnName = "id"))
 	private List<Especialidade> especialidades = new ArrayList<>();
