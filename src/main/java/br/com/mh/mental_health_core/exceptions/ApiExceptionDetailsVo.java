@@ -2,9 +2,11 @@ package br.com.mh.mental_health_core.exceptions;
 
 import java.time.LocalDateTime;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class ApiExceptionDetailsVo {
 	private String message;
     private int httpStatus;

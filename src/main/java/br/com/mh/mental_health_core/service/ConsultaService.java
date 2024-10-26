@@ -4,6 +4,7 @@ import br.com.mh.mental_health_core.exceptions.ConsultaNotFoundException;
 import br.com.mh.mental_health_core.model.Consulta;
 import br.com.mh.mental_health_core.repository.ConsultaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class ConsultaService {
 
     public Consulta getConsultaById(Integer id) {
         return consultaRepository.findById(id)
-                .orElseThrow(() -> new ConsultaNotFoundException("Consulta não encontrada com ID: " + id));
+                .orElseThrow(() -> new ConsultaNotFoundException(HttpStatus.NOT_FOUND, "Consulta não encontrada com ID: " + id));
     }
 
     public Consulta saveConsulta(Consulta consulta) {
@@ -28,7 +29,7 @@ public class ConsultaService {
     }
 
     public void deleteConsulta(Integer id) {
-        consultaRepository.findById(id).orElseThrow(() -> new ConsultaNotFoundException("Consulta não encontrada com ID: " + id));
+        consultaRepository.findById(id).orElseThrow(() -> new ConsultaNotFoundException(HttpStatus.NOT_FOUND, "Consulta não encontrada com ID: " + id));
         consultaRepository.deleteById(id);
     }
 }

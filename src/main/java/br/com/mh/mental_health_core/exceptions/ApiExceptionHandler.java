@@ -22,12 +22,8 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(ConsultaNotFoundException.class)
     public ResponseEntity<ApiExceptionDetailsVo> handleConsultaNotFound(ConsultaNotFoundException ex) {
-        ApiExceptionDetailsVo apiExceptionDetails = new ApiExceptionDetailsVo(
-                ex.getMessage(),
-                HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiExceptionDetails);
+
+        return ResponseEntity.status(ex.getHttpStatus()).body(ex.getApiExceptionDetailsVo());
     }
 
     @ExceptionHandler(DisponibilidadeNotFoundException.class)
