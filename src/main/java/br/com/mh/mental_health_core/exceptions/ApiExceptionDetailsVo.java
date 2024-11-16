@@ -5,6 +5,12 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+<<<<<<< HEAD
+=======
+import lombok.Builder;
+import lombok.Data;
+
+>>>>>>> 47415dbf403402a9057af11e3d82abcd964d2eaa
 @Data
 @Builder
 public class ApiExceptionDetailsVo {

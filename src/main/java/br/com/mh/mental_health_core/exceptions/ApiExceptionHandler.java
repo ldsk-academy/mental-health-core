@@ -14,6 +14,7 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(ex.getApiExceptionDetailsVo(), ex.getHttpStatus());
     }
 
+<<<<<<< HEAD
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiExceptionDetailsVo> handleGenericException(Exception ex) {
         // Cria detalhes do erro para uma exceção genérica
@@ -22,6 +23,13 @@ public class ApiExceptionHandler {
                 .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())  // Usa o valor do HttpStatus
                 .timestamp(java.time.LocalDateTime.now())
                 .build();
+=======
+    @ExceptionHandler(ConsultaNotFoundException.class)
+    public ResponseEntity<ApiExceptionDetailsVo> handleConsultaNotFound(ConsultaNotFoundException ex) {
+
+        return ResponseEntity.status(ex.getHttpStatus()).body(ex.getApiExceptionDetailsVo());
+    }
+>>>>>>> 47415dbf403402a9057af11e3d82abcd964d2eaa
 
         // Retorna a resposta com o erro genérico
         return new ResponseEntity<>(details, HttpStatus.INTERNAL_SERVER_ERROR);
