@@ -1,9 +1,9 @@
 package br.com.mh.mental_health_core.service;
 
-import br.com.mh.mental_health_core.exceptions.EspecialidadeNotFoundException;
+import br.com.mh.mental_health_core.exceptions.MentalHealthException;
 import br.com.mh.mental_health_core.model.Especialidade;
 import br.com.mh.mental_health_core.repository.EspecialidadeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +11,11 @@ import java.util.List;
 @Service
 public class EspecialidadeService {
 
-    @Autowired
-    private EspecialidadeRepository especialidadeRepository;
+    private final EspecialidadeRepository especialidadeRepository;
+
+    public EspecialidadeService(EspecialidadeRepository especialidadeRepository) {
+        this.especialidadeRepository = especialidadeRepository;
+    }
 
     public List<Especialidade> getAllEspecialidades() {
         return especialidadeRepository.findAll();
@@ -20,7 +23,10 @@ public class EspecialidadeService {
 
     public Especialidade getEspecialidadeById(Integer id) {
         return especialidadeRepository.findById(id)
-                .orElseThrow(() -> new EspecialidadeNotFoundException("Especialidade não encontrada com ID: " + id));
+                .orElseThrow(() -> new MentalHealthException(
+                        HttpStatus.NOT_FOUND, 
+                        "Especialidade não encontrada com ID: " + id
+                ));
     }
 
     public Especialidade saveEspecialidade(Especialidade especialidade) {
@@ -28,7 +34,12 @@ public class EspecialidadeService {
     }
 
     public void deleteEspecialidade(Integer id) {
-        especialidadeRepository.findById(id).orElseThrow(() -> new EspecialidadeNotFoundException("Especialidade não encontrada com ID: " + id));
+        if (!especialidadeRepository.existsById(id)) {
+            throw new MentalHealthException(
+                    HttpStatus.NOT_FOUND, 
+                    "Especialidade não encontrada com ID: " + id
+            );
+        }
         especialidadeRepository.deleteById(id);
     }
 }

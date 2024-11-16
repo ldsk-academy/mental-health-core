@@ -1,82 +1,29 @@
 package br.com.mh.mental_health_core.exceptions;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.HttpStatus;
 
-import java.time.LocalDateTime;
-
-@ControllerAdvice
+@RestControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ApiExceptionDetailsVo> handleRuntimeException(RuntimeException ex) {
-        ApiExceptionDetailsVo apiExceptionDetails = new ApiExceptionDetailsVo(
-                ex.getMessage(),
-                HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiExceptionDetails);
+    @ExceptionHandler(MentalHealthException.class)
+    public ResponseEntity<ApiExceptionDetailsVo> handleMentalHealthException(MentalHealthException ex) {
+        // Retorna a resposta com os detalhes da exceção personalizada
+        return new ResponseEntity<>(ex.getApiExceptionDetailsVo(), ex.getHttpStatus());
     }
 
-    @ExceptionHandler(ConsultaNotFoundException.class)
-    public ResponseEntity<ApiExceptionDetailsVo> handleConsultaNotFound(ConsultaNotFoundException ex) {
-        ApiExceptionDetailsVo apiExceptionDetails = new ApiExceptionDetailsVo(
-                ex.getMessage(),
-                HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiExceptionDetails);
-    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiExceptionDetailsVo> handleGenericException(Exception ex) {
+        // Cria detalhes do erro para uma exceção genérica
+        ApiExceptionDetailsVo details = ApiExceptionDetailsVo.builder()
+                .message("An unexpected error occurred: " + ex.getMessage())
+                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())  // Usa o valor do HttpStatus
+                .timestamp(java.time.LocalDateTime.now())
+                .build();
 
-    @ExceptionHandler(DisponibilidadeNotFoundException.class)
-    public ResponseEntity<ApiExceptionDetailsVo> handleDisponibilidadeNotFound(DisponibilidadeNotFoundException ex) {
-        ApiExceptionDetailsVo apiExceptionDetails = new ApiExceptionDetailsVo(
-                ex.getMessage(),
-                HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiExceptionDetails);
-    }
-
-    @ExceptionHandler(EspecialidadeNotFoundException.class)
-    public ResponseEntity<ApiExceptionDetailsVo> handleEspecialidadeNotFound(EspecialidadeNotFoundException ex) {
-        ApiExceptionDetailsVo apiExceptionDetails = new ApiExceptionDetailsVo(
-                ex.getMessage(),
-                HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiExceptionDetails);
-    }
-
-    @ExceptionHandler(FichaNotFoundException.class)
-    public ResponseEntity<ApiExceptionDetailsVo> handleFichaNotFound(FichaNotFoundException ex) {
-        ApiExceptionDetailsVo apiExceptionDetails = new ApiExceptionDetailsVo(
-                ex.getMessage(),
-                HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiExceptionDetails);
-    }
-
-    @ExceptionHandler(PacienteNotFoundException.class)
-    public ResponseEntity<ApiExceptionDetailsVo> handlePacienteNotFound(PacienteNotFoundException ex) {
-        ApiExceptionDetailsVo apiExceptionDetails = new ApiExceptionDetailsVo(
-                ex.getMessage(),
-                HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiExceptionDetails);
-    }
-
-    @ExceptionHandler(PsicologoNotFoundException.class)
-    public ResponseEntity<ApiExceptionDetailsVo> handlePsicologoNotFound(PsicologoNotFoundException ex) {
-        ApiExceptionDetailsVo apiExceptionDetails = new ApiExceptionDetailsVo(
-                ex.getMessage(),
-                HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiExceptionDetails);
+        // Retorna a resposta com o erro genérico
+        return new ResponseEntity<>(details, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

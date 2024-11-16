@@ -1,9 +1,9 @@
 package br.com.mh.mental_health_core.service;
 
-import br.com.mh.mental_health_core.exceptions.FichaNotFoundException;
+import br.com.mh.mental_health_core.exceptions.MentalHealthException;
 import br.com.mh.mental_health_core.model.Ficha;
 import br.com.mh.mental_health_core.repository.FichaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +11,11 @@ import java.util.List;
 @Service
 public class FichaService {
 
-    @Autowired
-    private FichaRepository fichaRepository;
+    private final FichaRepository fichaRepository;
+
+    public FichaService(FichaRepository fichaRepository) {
+        this.fichaRepository = fichaRepository;
+    }
 
     public List<Ficha> getAllFichas() {
         return fichaRepository.findAll();
@@ -20,7 +23,10 @@ public class FichaService {
 
     public Ficha getFichaById(Integer id) {
         return fichaRepository.findById(id)
-                .orElseThrow(() -> new FichaNotFoundException("Ficha não encontrada com ID: " + id));
+                .orElseThrow(() -> new MentalHealthException(
+                        HttpStatus.NOT_FOUND, 
+                        "Ficha não encontrada com ID: " + id
+                ));
     }
 
     public Ficha saveFicha(Ficha ficha) {
@@ -28,7 +34,12 @@ public class FichaService {
     }
 
     public void deleteFicha(Integer id) {
-        fichaRepository.findById(id).orElseThrow(() -> new FichaNotFoundException("Ficha não encontrada com ID: " + id));
+        if (!fichaRepository.existsById(id)) {
+            throw new MentalHealthException(
+                    HttpStatus.NOT_FOUND, 
+                    "Ficha não encontrada com ID: " + id
+            );
+        }
         fichaRepository.deleteById(id);
     }
 }
